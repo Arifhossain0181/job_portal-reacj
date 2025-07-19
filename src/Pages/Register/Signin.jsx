@@ -3,16 +3,14 @@ import Authcontext from "../../Context/Authcontext";
 import Lottie from "lottie-react";
 import logindata from "../../assets/Animation - 1749484695854.json";
 import { useLocation, useNavigate } from "react-router";
+import axios from "axios";
 
 const Signin = () => {
   const { signin } = useContext(Authcontext);
   const location = useLocation();
-  const navigate = useNavigate()
-   console.log('sig in ' ,location);
-   const from = location.state || '/'
- 
-
-
+  const navigate = useNavigate();
+  console.log("sig in ", location);
+  const from = location.state || "/";
 
   const handlesignin = (e) => {
     e.preventDefault();
@@ -25,9 +23,14 @@ const Signin = () => {
     // show Password validation  error
     signin(email, Password)
       .then((result) => {
-        console.log(result.user);
-        navigate(from)
+        console.log(result.user.email);
+        const user = { email: result.user.email }
+        axios.post(`http://localhost:3000/jwt`,user ,{
+          withCredentials:true
+        }) 
+        .then( res => console.log( res.data))
         
+        //navigate(from);
       })
       .catch((error) => {
         console.log(error.message);
@@ -38,7 +41,6 @@ const Signin = () => {
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <div className="w-94 text-center lg:text-left">
-           
             <Lottie animationData={logindata}></Lottie>
           </div>
         </div>
